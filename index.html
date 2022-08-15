@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>자리 배정 프로그램</title>
+        <!--<link rel="stylesheet" href="/dist/output.css" type="text/css">-->
+    </head>
+    <body>
+        <h1>자리 배정 프로그램</h1>
+        <form>
+            <input id="studentInput" type="number" min="0" placeholder="학생 수 입력: 20">
+            <br>
+            <label for="columnSelect">열 개수: </label>
+            <select id="columnSelect">
+                <option value=1>1</option>
+                <option value=2>2</option>
+                <option value=3>3</option>
+                <option value=4>4</option>
+                <option value=5 selected>5</option>
+                <option value=6>6</option>
+            </select>
+            <input id="confirmButton" type="button" value="자리 배정">
+        </form>
+        <br>
+        <p>교탁</p>
+        <div id="table" style="width:20%; float:left; ">
+            <script type="text/javascript">
+                document.write('<table>');
+                for (let i = 0; i < 20/5; i++)  {
+                    document.write('<tr>');
+                        for (let j = 0; j < 5; j++) {
+                            document.write('<td><img src="./src/images/undefined_24.png"></td>');
+                        }
+                    document.write('</tr>');
+                }
+                document.write('</table><br/>');
+            </script>
+        </div>
+        <br>
+        <script src="/src/scripts/main.js" type="text/javascript"></script>
+        <footer>
+            <p>Copyright © 2022 LeeJiwon All rights reserved.</p>
+        </footer>
+    </body>
+</html>
