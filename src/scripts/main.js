@@ -47,7 +47,7 @@ function userInput(stdNum, colNum)    {
         alert('학생 수는 1명 이상, 30명 이하만 입력 가능합니다.');
         stdNum.value = null;
     }   else    {
-        alert('학생 수 ' + stdNum.value + '명을, ' + '열 개수 ' + colNum.value + '개를 입력하셨습니다.');
+        alert('학생 수 ' + stdNum.value + '명, ' + '열 개수 ' + colNum.value + '개');
     }
 }
 
@@ -71,14 +71,14 @@ function updateTable(stdNum, colNum, arrmentTable)   {
     }
     table += '<table class="border-separate border-spacing-2">';
     for (let i = 0; i < parseInt(stdNum.value / colNum.value); i++)    {
-        table += '<tr>';
+        table += '<tr align="center">';
         for (let j = 0; j < colNum.value; j++)   {
             table += '<td class="p-1 w-12 h-12 border bg-white bg-opacity-25"><img src="./src/images/undefined_24.png"></td>';
         }
         table += '</tr>';
     }
     if (stdNum.value % colNum.value != 0)    {
-        table += '<tr>';
+        table += '<tr align="center">';
         for (let i = 0; i < stdNum.value % colNum.value; i++)    {
             table += `<td class="p-1 w-12 h-12 border bg-white bg-opacity-25"><img src="./src/images/undefined_24.png"></td>`;
         }
@@ -90,9 +90,9 @@ function updateTable(stdNum, colNum, arrmentTable)   {
 function resultTable(stdNum, colNum, randArr)    {
     let count = 0;
     var table = '';
-    table += '<table class="border-separate border-spacing-2">';
+    table += '<table class="border-separate border-spacing-2 font-bold">';
     for (let i = 0; i < parseInt(stdNum.value / colNum.value); i++)    {
-        table += '<tr>';
+        table += '<tr align="center">';
         for (let j = 0; j < colNum.value; j++)   {
             table += `<td class="p-1 w-12 h-12 border bg-white bg-opacity-25"> ${randArr[count]}</td>`;
             count++;
@@ -100,7 +100,7 @@ function resultTable(stdNum, colNum, randArr)    {
         table += '</tr>';
     }
     if (stdNum.value % colNum.value != 0)    {
-        table += '<tr>';
+        table += '<tr align="center">';
         for (let i = 0; i < stdNum.value % colNum.value; i++)    {
             table += `<td class="p-1 w-12 h-12 border bg-white bg-opacity-25"> ${randArr[count]}</td>`;
             count++;
