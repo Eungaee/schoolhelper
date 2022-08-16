@@ -4,15 +4,26 @@ const columnNum = document.getElementById('columnSelect');
 
 var arrangementTable = document.getElementById('table');
 
-studentNum.onchange = function() {updateTable(studentNum, columnNum, arrangementTable)};
+studentNum.onchange = function() {
+    if (studentNum.value <= 0 || studentNum.value > 100)    {
+        alert('학생 수는 1명 이상, 100명 이하만 입력 가능합니다.');
+        studentNum.value = null;
+    }
+    updateTable(studentNum, columnNum, arrangementTable);
+};
 columnNum.onchange = function() {updateTable(studentNum, columnNum, arrangementTable)};
 
 myButton.onclick = ()=>{
     if (myButton.value === '자리 배정') {
+        studentNum.disabled=true;
+        columnNum.disabled=true;
+        main(studentNum, columnNum, arrangementTable);
         myButton.value = '다시 하기';
-        main(studentNum, columnNum, arrangementTable)
     }   else if (myButton.value === '다시 하기')    {
         studentNum.value = null;
+        studentNum.disabled=false;
+        columnNum.disabled=false;
+        updateTable(studentNum, columnNum, arrangementTable);
         myButton.value = '자리 배정';
     }
 }
@@ -48,18 +59,21 @@ function randArrange(num)   {
 
 function updateTable(stdNum, colNum, arrmentTable)   {
     var table = '';
-    table += '<table>';
+    if (stdNum.value === '')    {
+        stdNum.value = 20;
+    }
+    table += '<table class="border-separate border-spacing-2">';
     for (let i = 0; i < parseInt(stdNum.value / colNum.value); i++)    {
         table += '<tr>';
         for (let j = 0; j < colNum.value; j++)   {
-            table += '<td><img src="./src/images/undefined_24.png"></td>';
+            table += '<td class="p-1 border w-12 h-12"><img src="./src/images/undefined_24.png"></td>';
         }
         table += '</tr>';
     }
     if (stdNum.value % colNum.value != 0)    {
         table += '<tr>';
         for (let i = 0; i < stdNum.value % colNum.value; i++)    {
-            table += `<td><img src="./src/images/undefined_24.png"></td>`;
+            table += `<td class="p-1 border w-12 h-12"><img src="./src/images/undefined_24.png"></td>`;
         }
     }
     table += '</table><br/>';
@@ -69,11 +83,11 @@ function updateTable(stdNum, colNum, arrmentTable)   {
 function resultTable(stdNum, colNum, randArr)    {
     let count = 0;
     var table = '';
-    table += '<table>';
+    table += '<table class="border-separate border-spacing-2">';
     for (let i = 0; i < parseInt(stdNum.value / colNum.value); i++)    {
         table += '<tr>';
         for (let j = 0; j < colNum.value; j++)   {
-            table += '<td>' + randArr[count] + '</td>';
+            table += `<td class="p-2 border w-12 h-12"> ${randArr[count]}</td>`;
             count++;
         }
         table += '</tr>';
@@ -81,7 +95,8 @@ function resultTable(stdNum, colNum, randArr)    {
     if (stdNum.value % colNum.value != 0)    {
         table += '<tr>';
         for (let i = 0; i < stdNum.value % colNum.value; i++)    {
-            table += `<td></td>`;
+            table += `<td class="p-2 border w-12 h-12"> ${randArr[count]}</td>`;
+            count++;
         }
     }
     table += '</table><br/>';
