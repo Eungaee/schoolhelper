@@ -2,6 +2,9 @@ const myButton = document.getElementById('confirmButton');
 const studentNum = document.getElementById('studentInput');
 const columnNum = document.getElementById('columnSelect');
 
+let stdnClass = studentNum.className;
+let colnClass = columnNum.className;
+
 var arrangementTable = document.getElementById('table');
 
 studentNum.onchange = function() {
@@ -17,14 +20,18 @@ myButton.onclick = ()=>{
     if (myButton.value === '자리 배정') {
         studentNum.disabled=true;
         columnNum.disabled=true;
-        main(studentNum, columnNum, arrangementTable);
+        studentNum.className += ' cursor-not-allowed';
+        columnNum.className += ' cursor-not-allowed';
         myButton.value = '다시 하기';
+        main(studentNum, columnNum, arrangementTable);
     }   else if (myButton.value === '다시 하기')    {
         studentNum.value = null;
         studentNum.disabled=false;
         columnNum.disabled=false;
-        updateTable(studentNum, columnNum, arrangementTable);
+        studentNum.className = stdnClass;
+        columnNum.className = colnClass;
         myButton.value = '자리 배정';
+        updateTable(studentNum, columnNum, arrangementTable);
     }
 }
 
@@ -66,14 +73,14 @@ function updateTable(stdNum, colNum, arrmentTable)   {
     for (let i = 0; i < parseInt(stdNum.value / colNum.value); i++)    {
         table += '<tr>';
         for (let j = 0; j < colNum.value; j++)   {
-            table += '<td class="p-1 border w-12 h-12"><img src="./src/images/undefined_24.png"></td>';
+            table += '<td class="p-1 w-12 h-12 border bg-white bg-opacity-25"><img src="./src/images/undefined_24.png"></td>';
         }
         table += '</tr>';
     }
     if (stdNum.value % colNum.value != 0)    {
         table += '<tr>';
         for (let i = 0; i < stdNum.value % colNum.value; i++)    {
-            table += `<td class="p-1 border w-12 h-12"><img src="./src/images/undefined_24.png"></td>`;
+            table += `<td class="p-1 w-12 h-12 border bg-white bg-opacity-25"><img src="./src/images/undefined_24.png"></td>`;
         }
     }
     table += '</table><br/>';
@@ -87,7 +94,7 @@ function resultTable(stdNum, colNum, randArr)    {
     for (let i = 0; i < parseInt(stdNum.value / colNum.value); i++)    {
         table += '<tr>';
         for (let j = 0; j < colNum.value; j++)   {
-            table += `<td class="p-2 border w-12 h-12"> ${randArr[count]}</td>`;
+            table += `<td class="p-1 w-12 h-12 border bg-white bg-opacity-25"> ${randArr[count]}</td>`;
             count++;
         }
         table += '</tr>';
@@ -95,7 +102,7 @@ function resultTable(stdNum, colNum, randArr)    {
     if (stdNum.value % colNum.value != 0)    {
         table += '<tr>';
         for (let i = 0; i < stdNum.value % colNum.value; i++)    {
-            table += `<td class="p-2 border w-12 h-12"> ${randArr[count]}</td>`;
+            table += `<td class="p-1 w-12 h-12 border bg-white bg-opacity-25"> ${randArr[count]}</td>`;
             count++;
         }
     }
