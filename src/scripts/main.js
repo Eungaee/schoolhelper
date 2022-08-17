@@ -1,9 +1,11 @@
-const myButton = document.getElementById('confirmButton');
 const studentNum = document.getElementById('studentInput');
 const columnNum = document.getElementById('columnSelect');
+const confirmButton = document.getElementById('confirmInput');
+const saveimgButton = document.getElementById('saveimgInput');
 
 let stdnClass = studentNum.className;
 let colnClass = columnNum.className;
+let savibClass = saveimgButton.className;
 
 var arrangementTable = document.getElementById('table');
 
@@ -16,23 +18,36 @@ studentNum.onchange = function() {
 };
 columnNum.onchange = function() {updateTable(studentNum, columnNum, arrangementTable)};
 
-myButton.onclick = ()=>{
-    if (myButton.value === '자리 배정') {
+confirmButton.onclick = ()=>{
+    if (confirmButton.value === '자리 배정') {
         studentNum.disabled=true;
         columnNum.disabled=true;
         studentNum.className += ' cursor-not-allowed';
         columnNum.className += ' cursor-not-allowed';
-        myButton.value = '다시 하기';
-        main(studentNum, columnNum, arrangementTable);
-    }   else if (myButton.value === '다시 하기')    {
+        confirmButton.value = '다시 하기';
+        saveimgButton.className = savibClass.slice(0, -10);
+        if (studentNum.value <= 0 || studentNum.value > 100)    {
+            alert('학생 수는 1명 이상, 100명 이하만 입력 가능합니다.');
+            studentNum.value = null;
+            saveimgButton.className = savibClass;
+            updateTable(studentNum, columnNum, arrangementTable);
+        }   else    {
+            main(studentNum, columnNum, arrangementTable);
+        }
+    }   else if (confirmButton.value === '다시 하기')    {
         studentNum.value = null;
         studentNum.disabled=false;
         columnNum.disabled=false;
         studentNum.className = stdnClass;
         columnNum.className = colnClass;
-        myButton.value = '자리 배정';
+        confirmButton.value = '자리 배정';
+        saveimgButton.className = savibClass;
         updateTable(studentNum, columnNum, arrangementTable);
     }
+}
+
+saveimgButton.onclick = ()=>{
+    PrintDiv(document.getElementById('tablefield'));
 }
 
 function main(stdNum, colNum, arrmentTable) {
@@ -43,12 +58,7 @@ function main(stdNum, colNum, arrmentTable) {
 }
 
 function userInput(stdNum, colNum)    {
-    if (stdNum.value <= 0 || stdNum.value > 30)   {
-        alert('학생 수는 1명 이상, 30명 이하만 입력 가능합니다.');
-        stdNum.value = null;
-    }   else    {
-        alert('학생 수 ' + stdNum.value + '명, ' + '열 개수 ' + colNum.value + '개');
-    }
+    alert('학생 수 ' + stdNum.value + '명, ' + '열 개수 ' + colNum.value + '개');
 }
 
 function randArrange(num)   {
@@ -108,4 +118,19 @@ function resultTable(stdNum, colNum, randArr)    {
     }
     table += '</table><br/>';
     return table;
+}
+
+function PrintDiv(div){
+	html2canvas(div).then(function(canvas){
+		var myImage = canvas.toDataURL();
+		downloadURI(myImage, "seatingchart.png") 
+	});
+}
+
+function downloadURI(uri, name) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();   
 }
