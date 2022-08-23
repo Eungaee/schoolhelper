@@ -9,16 +9,19 @@ let savibClass = saveimgButton.className;
 
 var arrangementTable = document.getElementById('table');
 
-studentNum.onchange = function() {
+studentNum.addEventListener("change", function()    {
     if (studentNum.value <= 0 || studentNum.value > 100)    {
         alert('학생 수는 1명 이상, 100명 이하만 입력 가능합니다.');
         studentNum.value = null;
     }
     updateTable(studentNum, columnNum, arrangementTable);
-};
-columnNum.onchange = function() {updateTable(studentNum, columnNum, arrangementTable)};
+})
 
-confirmButton.onclick = ()=>{
+columnNum.addEventListener("change", function() {
+    updateTable(studentNum, columnNum, arrangementTable);
+})
+
+confirmButton.addEventListener("click", function()  {
     if (confirmButton.value === '자리 배정') {
         studentNum.disabled=true;
         columnNum.disabled=true;
@@ -44,11 +47,11 @@ confirmButton.onclick = ()=>{
         saveimgButton.className = savibClass;
         updateTable(studentNum, columnNum, arrangementTable);
     }
-}
+})
 
-saveimgButton.onclick = ()=>{
+saveimgButton.addEventListener("click", function()  {
     PrintDiv(document.getElementById('tablefield'));
-}
+})
 
 function main(stdNum, colNum, arrmentTable) {
     userInput(stdNum, colNum);
