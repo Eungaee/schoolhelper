@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://Av3lla.github.io/random-seat-generator/sitemap.xml
