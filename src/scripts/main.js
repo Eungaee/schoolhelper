@@ -46,10 +46,8 @@ confirmButton.addEventListener("click", function()  {
     if (confirmButton.value === '자리 배정') {
         studentNum.disabled = true;
         columnNum.disabled = true;
-        confirmButton.disabled = true;
         studentNum.className += ' cursor-not-allowed';
         columnNum.className += ' cursor-not-allowed';
-        confirmButton.className += ' cursor-not-allowed';
         confirmButton.value = '다시 하기';
         main(studentNum, columnNum, arrangementTable);
     }   else if (confirmButton.value === '다시 하기')    {
@@ -86,11 +84,10 @@ function main(stdNum, colNum, arrmentTable) {
     }
 }
 
-function mainProcess(stdNum, colNum, arrmentTable, func)  {
+function mainProcess(stdNum, colNum, arrmentTable)  {
     const randArr = randArrange(stdNum.value);
     const finalTable = resultTable(stdNum, colNum, randArr);
     arrmentTable.innerHTML = finalTable;
-    func();
 }
 
 /**
