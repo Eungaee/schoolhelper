@@ -3,66 +3,127 @@ const columnNum = document.getElementById('columnSelect');
 const confirmButton = document.getElementById('confirmInput');
 const saveimgButton = document.getElementById('saveimgInput');
 
-let stdnClass = studentNum.className;
-let colnClass = columnNum.className;
-let savibClass = saveimgButton.className;
+const classNames = {
+    stdn: studentNum.className,
+    coln: columnNum.className,
+    confb: confirmButton.className,
+    savib: saveimgButton.className
+};
 
-var arrangementTable = document.getElementById('table');
+const stdnClass = studentNum.className;
+const colnClass = columnNum.className;
+const confbClass = confirmButton.className;
+const savibClass = saveimgButton.className;
 
+const arrangementTable = document.getElementById('table');
+
+let restart = false;
+
+/**
+ * When user change value of Students
+ */
 studentNum.addEventListener("change", function()    {
-    if (studentNum.value <= 0 || studentNum.value > 500)    {
-        alert('학생 수는 1명 이상, 500명 이하만 입력 가능합니다.');
-        studentNum.value = null;
+    if(checkLimit(studentNum))  {
+        return;
     }
     updateTable(studentNum, columnNum, arrangementTable);
 })
 
+/**
+ * When user change value of Columns
+ */
 columnNum.addEventListener("change", function() {
     updateTable(studentNum, columnNum, arrangementTable);
 })
 
+/**
+ * When user click Confirm Button
+ */
 confirmButton.addEventListener("click", function()  {
+    if(checkLimit(studentNum))  {
+        return;
+    }
     if (confirmButton.value === '자리 배정') {
-        studentNum.disabled=true;
-        columnNum.disabled=true;
+        studentNum.disabled = true;
+        columnNum.disabled = true;
+        confirmButton.disabled = true;
         studentNum.className += ' cursor-not-allowed';
         columnNum.className += ' cursor-not-allowed';
+        confirmButton.className += ' cursor-not-allowed';
         confirmButton.value = '다시 하기';
-        saveimgButton.className = savibClass.slice(0, -10);
         main(studentNum, columnNum, arrangementTable);
     }   else if (confirmButton.value === '다시 하기')    {
         studentNum.value = null;
-        studentNum.disabled=false;
-        columnNum.disabled=false;
-        studentNum.className = stdnClass;
-        columnNum.className = colnClass;
+        studentNum.disabled = false;
+        columnNum.disabled = false;
+        studentNum.className = classNames.stdn;
+        columnNum.className = classNames.coln;
+        /** 자리 배치 저장하기 버튼이 애니메이션 재생 중 보여지는 버그 있음. */
+        saveimgButton.className = classNames.savib;
         confirmButton.value = '자리 배정';
-        saveimgButton.className = savibClass;
+        restart = true;
         updateTable(studentNum, columnNum, arrangementTable);
     }
 })
 
+/**
+ * When user click Save Image Button
+ */
 saveimgButton.addEventListener("click", function()  {
     PrintDiv(document.getElementById('tablefield'));
 })
 
+/**
+ * Main Function
+ * anim 함수 끝나기 전에 mainProcess 가 실행되는 버그 있음.
+ */
 function main(stdNum, colNum, arrmentTable) {
-    userInput(stdNum, colNum);
+    if (rusure(stdNum, colNum))  {
+        anim(stdNum, colNum, arrmentTable);
+        mainProcess(stdNum, colNum, arrmentTable, enableButton);
+    }   else    {
+        
+    }
+}
+
+function mainProcess(stdNum, colNum, arrmentTable, func)  {
     const randArr = randArrange(stdNum.value);
-    finalTable = resultTable(stdNum, colNum, randArr);
+    const finalTable = resultTable(stdNum, colNum, randArr);
     arrmentTable.innerHTML = finalTable;
+    func();
 }
 
-function userInput(stdNum, colNum)    {
-    alert('학생 수 ' + stdNum.value + '명, ' + '열 개수 ' + colNum.value + '개');
+/**
+ * Check amount of students
+ */
+function checkLimit(stdNum)   {
+    if (stdNum.value <= 0 || stdNum.value > 500)    {
+        alert('학생 수는 1명 이상, 500명 이하만 입력 가능합니다.');
+        stdNum.value = null;
+        return true;
+    }
 }
 
+/**
+ * Are you sure?
+ */
+function rusure(stdNum, colNum)    {
+    if (confirm(`정말 "학생 수 ${stdNum.value}명, 열 개수 ${colNum.value}개" 로 배치할까요?`))  {
+        return true;
+    }   else    {
+        return false;
+    }
+}
+
+/**
+ * Make Random Arrray
+ */
 function randArrange(num)   {
-    randArr = {};
+    let randArr = {};
     for (let i = 0; i < num; i++)   {
         randArr[i] = Math.floor(Math.random() * num) + 1;
         for (let j = 0; j < i; j++)   {
-            if (randArr[i] == randArr[j])   {
+            if (randArr[i] === randArr[j])   {
                 i--;
             }
         }
@@ -70,9 +131,45 @@ function randArrange(num)   {
     return randArr;
 }
 
+/**
+ * Animation
+ * @todo 마지막 테이블 출력 시 화면 흔들리는 효과
+ */
+function anim(stdNum, colNum, arrmentTable) {
+    let delay = 0;
+    //while 문으로 사용할 시 js eventloop 내부 구조상 렌더링이 while 문 실행이 완료된 이후 진행됨.
+    function loop() {
+        if (restart === true)   {
+            restart = false;
+            return;
+        }
+        if (delay > 300)    {
+            return;
+        }
+        const animRandArr = randArrange(stdNum.value);
+        const animTable = resultTable(stdNum, colNum, animRandArr);
+        arrmentTable.innerHTML = animTable;
+        sleep(delay);
+        delay += 10;
+        setTimeout(loop, 0);
+    }
+    loop();
+}
+
+/**
+ * Delay
+ */
+function sleep(ms)  {
+    const wakeUpTime = Date.now() + ms;
+    while (Date.now() < wakeUpTime) {}
+}
+
+/**
+ * Update arrangement of Table
+ */
 function updateTable(stdNum, colNum, arrmentTable)   {
-    var table = '';
-    stdnum = stdNum.value;
+    let table = '';
+    let stdnum = stdNum.value;
     if (stdnum === '')    {
         stdnum = 20;
     }
@@ -94,9 +191,12 @@ function updateTable(stdNum, colNum, arrmentTable)   {
     arrmentTable.innerHTML = table;
 }
 
+/**
+ * Show Result Table
+ */
 function resultTable(stdNum, colNum, randArr)    {
     let count = 0;
-    var table = '';
+    let table = '';
     table += '<table class="border-separate border-spacing-2 font-bold">';
     for (let i = 0; i < parseInt(stdNum.value / colNum.value); i++)    {
         table += '<tr align="center">';
@@ -117,7 +217,10 @@ function resultTable(stdNum, colNum, randArr)    {
     return table;
 }
 
-function PrintDiv(div){
+/**
+ * html2canvas
+ */
+function PrintDiv(div)  {
 	html2canvas(div).then(function(canvas){
 		var myImage = canvas.toDataURL();
 		downloadURI(myImage, "seatingchart.png") 
