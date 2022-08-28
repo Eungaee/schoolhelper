@@ -10,11 +10,6 @@ const classNames = {
     savib: saveimgButton.className
 };
 
-const stdnClass = studentNum.className;
-const colnClass = columnNum.className;
-const confbClass = confirmButton.className;
-const savibClass = saveimgButton.className;
-
 const arrangementTable = document.getElementById('table');
 
 let restart = false;
@@ -48,7 +43,9 @@ confirmButton.addEventListener("click", function()  {
         columnNum.disabled = true;
         studentNum.className += ' cursor-not-allowed';
         columnNum.className += ' cursor-not-allowed';
+        saveimgButton.className = classNames.savib.slice(0, -10);
         confirmButton.value = '다시 하기';
+        restart = false;
         main(studentNum, columnNum, arrangementTable);
     }   else if (confirmButton.value === '다시 하기')    {
         studentNum.value = null;
@@ -78,7 +75,7 @@ saveimgButton.addEventListener("click", function()  {
 function main(stdNum, colNum, arrmentTable) {
     if (rusure(stdNum, colNum))  {
         anim(stdNum, colNum, arrmentTable);
-        mainProcess(stdNum, colNum, arrmentTable, enableButton);
+        mainProcess(stdNum, colNum, arrmentTable);
     }   else    {
         
     }
@@ -137,7 +134,6 @@ function anim(stdNum, colNum, arrmentTable) {
     //while 문으로 사용할 시 js eventloop 내부 구조상 렌더링이 while 문 실행이 완료된 이후 진행됨.
     function loop() {
         if (restart === true)   {
-            restart = false;
             return;
         }
         if (delay > 300)    {
