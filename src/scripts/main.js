@@ -38,7 +38,7 @@ confirmButton.addEventListener("click", function()  {
     if(checkLimit(studentNum))  {
         return;
     }
-    if (confirmButton.value === '자리 배정') {
+    if (confirmButton.value === '자리 배치') {
         studentNum.disabled = true;
         columnNum.disabled = true;
         studentNum.className += ' cursor-not-allowed';
@@ -55,7 +55,7 @@ confirmButton.addEventListener("click", function()  {
         columnNum.className = classNames.coln;
         /** 자리 배치 저장하기 버튼이 애니메이션 재생 중 보여지는 버그 있음. */
         saveimgButton.className = classNames.savib;
-        confirmButton.value = '자리 배정';
+        confirmButton.value = '자리 배치';
         restart = true;
         updateTable(studentNum, columnNum, arrangementTable);
     }
@@ -77,7 +77,7 @@ function main(stdNum, colNum, arrmentTable) {
         anim(stdNum, colNum, arrmentTable);
         mainProcess(stdNum, colNum, arrmentTable);
     }   else    {
-        
+        return;
     }
 }
 
@@ -170,14 +170,14 @@ function updateTable(stdNum, colNum, arrmentTable)   {
     for (let i = 0; i < parseInt(stdnum / colNum.value); i++)    {
         table += '<tr align="center">';
         for (let j = 0; j < colNum.value; j++)   {
-            table += '<td class="p-1 w-12 h-12 border bg-white bg-opacity-25"><img src="./src/images/undefined_24.png"></td>';
+            table += '<td class="p-1 w-12 h-12 border bg-white bg-opacity-25"><img src="../../src/images/undefined_24.png"></td>';
         }
         table += '</tr>';
     }
     if (stdnum % colNum.value != 0)    {
         table += '<tr align="center">';
         for (let i = 0; i < stdnum % colNum.value; i++)    {
-            table += `<td class="p-1 w-12 h-12 border bg-white bg-opacity-25"><img src="./src/images/undefined_24.png"></td>`;
+            table += `<td class="p-1 w-12 h-12 border bg-white bg-opacity-25"><img src="../../src/images/undefined_24.png"></td>`;
         }
     }
     table += '</table><br/>';
