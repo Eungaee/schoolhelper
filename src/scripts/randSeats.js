@@ -1,16 +1,17 @@
 const studentNum = document.getElementById('studentInput');
 const columnNum = document.getElementById('columnSelect');
-const confirmButton = document.getElementById('confirmInput');
-const saveimgButton = document.getElementById('saveimgInput');
+const goButton = document.getElementById('goButton');
+const saveimgButton = document.getElementById('savimgButton');
+const arrangementTable = document.getElementById('table');
 
 const classNames = {
     stdn: studentNum.className,
     coln: columnNum.className,
-    confb: confirmButton.className,
+    gob: goButton.className,
     savib: saveimgButton.className
 };
 
-const arrangementTable = document.getElementById('table');
+const goButtonRestart ='<svg class="w-1/2 h-1/2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path></svg>';
 
 let restart = false;
 
@@ -18,7 +19,7 @@ let restart = false;
  * When user change value of Students
  */
 studentNum.addEventListener("change", function()    {
-    if(checkLimit(studentNum))  {
+    if (checkLimit(studentNum))  {
         return;
     }
     updateTable(studentNum, columnNum, arrangementTable);
@@ -32,30 +33,30 @@ columnNum.addEventListener("change", function() {
 })
 
 /**
- * When user click Confirm Button
+ * When user click Go Button
  */
-confirmButton.addEventListener("click", function()  {
-    if(checkLimit(studentNum))  {
+goButton.addEventListener("click", function()  {
+    if (checkLimit(studentNum))  {
         return;
     }
-    if (confirmButton.value === '자리 배치') {
+    if (goButton.innerText === 'GO !') {
         studentNum.disabled = true;
-        columnNum.disabled = true;
         studentNum.className += ' cursor-not-allowed';
+        columnNum.disabled = true;
         columnNum.className += ' cursor-not-allowed';
         saveimgButton.className = classNames.savib.slice(0, -10);
-        confirmButton.value = '다시 하기';
+        goButton.innerHTML = goButtonRestart;
         restart = false;
         main(studentNum, columnNum, arrangementTable);
-    }   else if (confirmButton.value === '다시 하기')    {
+    }   else if (goButton.innerHTML === goButtonRestart)    {
         studentNum.value = null;
         studentNum.disabled = false;
-        columnNum.disabled = false;
         studentNum.className = classNames.stdn;
+        columnNum.disabled = false;
         columnNum.className = classNames.coln;
         /** 자리 배치 저장하기 버튼이 애니메이션 재생 중 보여지는 버그 있음. */
         saveimgButton.className = classNames.savib;
-        confirmButton.value = '자리 배치';
+        goButton.innerText = 'GO !';
         restart = true;
         updateTable(studentNum, columnNum, arrangementTable);
     }
@@ -81,6 +82,9 @@ function main(stdNum, colNum, arrmentTable) {
     }
 }
 
+/**
+ * Main Processes
+ */
 function mainProcess(stdNum, colNum, arrmentTable)  {
     const randArr = randArrange(stdNum.value);
     const finalTable = resultTable(stdNum, colNum, randArr);
@@ -130,20 +134,24 @@ function randArrange(num)   {
  * @todo 마지막 테이블 출력 시 화면 흔들리는 효과
  */
 function anim(stdNum, colNum, arrmentTable) {
-    let delay = 0;
+    let delay = 10;
     //while 문으로 사용할 시 js eventloop 내부 구조상 렌더링이 while 문 실행이 완료된 이후 진행됨.
     function loop() {
         if (restart === true)   {
             return;
         }
-        if (delay > 300)    {
+        if (delay > 350)    {
             return;
         }
         const animRandArr = randArrange(stdNum.value);
         const animTable = resultTable(stdNum, colNum, animRandArr);
         arrmentTable.innerHTML = animTable;
         sleep(delay);
-        delay += 10;
+        if (delay < 300)    {
+            delay += 5;
+        }   else    {
+            delay += 25;
+        }
         setTimeout(loop, 0);
     }
     loop();
