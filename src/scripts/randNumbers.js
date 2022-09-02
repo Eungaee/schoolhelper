@@ -2,7 +2,7 @@ const amountNum = document.getElementById('amountInput');
 const rangeNum = document.getElementById('rangeInput');
 const goButton = document.getElementById('goButton');
 const saveimgButton = document.getElementById('savimgButton');
-const resultField = document.getElementById('resultField');
+const resultDiv = document.getElementById('resultDiv');
 
 const classNames = {
     amtn: amountNum.className,
@@ -11,10 +11,11 @@ const classNames = {
     savib: saveimgButton.className
 };
 
-const goButtonRestart ='<svg class="w-1/3 h-1/3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path></svg>';
+const goButtonRestart ='<svg class="w-1/2 h-1/2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path></svg>';
 
 let restart = false;
 let wait = true;
+let waitNum = 9;
 
 const soundEffects = [];
 for (let i = 0; i < 45; i++)    {
@@ -27,9 +28,9 @@ function loop() {
     if (wait === false)   {
         return;
     }
-    const waitRandArr = randArrange(5, 9);
+    const waitRandArr = randArrange(waitNum, waitNum);
     const waitDiv = makeResultDiv(waitRandArr);
-    resultField.innerHTML = waitDiv;
+    resultDiv.innerHTML = waitDiv;
     sleep(50);
     setTimeout(loop, 0);
 }
@@ -39,20 +40,20 @@ loop();
  * When user change value of Amount
  */
 amountNum.addEventListener("change", function()    {
-    wait = false;
     if (checkLimit(amountNum.value, rangeNum.value))  {
         return;
     }
+    waitNum = amountNum.value;
 })
 
 /**
  * When user change value of Range
  */
 rangeNum.addEventListener("change", function() {
-    wait = false;
-    if (checkLimit(amountNum.value, rangeNum.value))   {
+    if (checkLimit(amountNum.value, rangeNum.value))    {
         return;
     }
+    waitNum = amountNum.value;
 })
 
 /**
@@ -70,6 +71,7 @@ goButton.addEventListener("click", function()  {
         saveimgButton.className = classNames.savib.slice(0, -10);
         goButton.innerHTML = goButtonRestart;
         restart = false;
+        wait = false;
         main(amountNum, rangeNum);
     }   else if (goButton.innerHTML === goButtonRestart)    {
         amountNum.value = null;
@@ -100,8 +102,8 @@ saveimgButton.addEventListener("click", function()  {
  */
 function main(amtNum, rngNum) {
     if (rusure(amtNum.value, rngNum.value))  {
-        anim(amtNum.value, rngNum.value, resultField);
-        mainProcess(amtNum.value, rngNum.value, resultField);
+        anim(amtNum.value, rngNum.value, resultDiv);
+        mainProcess(amtNum.value, rngNum.value, resultDiv);
     }   else    {
         return;
     }
@@ -110,11 +112,11 @@ function main(amtNum, rngNum) {
 /**
  * Main Processes
  */
-function mainProcess(amount, range, resultField)  {
+function mainProcess(amount, range, resultDiv)  {
     const adjustedRange = (range === '') ? 10 : range;
     const randArr = randArrange(amount, adjustedRange);
     const finalDiv = makeResultDiv(randArr);
-    resultField.innerHTML = finalDiv;
+    resultDiv.innerHTML = finalDiv;
     soundEffects[0].play();
 }
 
@@ -122,16 +124,17 @@ function mainProcess(amount, range, resultField)  {
  * Check amount of Amount and Range
  */
 function checkLimit(amount, range)   {
-    const adjustedRange = (range === '') ? 10 : range;
-    if (parseInt(amount) > parseInt(adjustedRange) || amount < 1)   {
-        alert(`개수 "${amount}" 는 범위 "${adjustedRange}" 내에서 입력해주세요.`);
+    if (amount === '' || range === '')  {
+        return;
+    }   else if (parseInt(amount) > parseInt(range) || amount < 1)   {
+        alert(`개수 "${amount}" 는 범위 "${range}" 내에서 입력해주세요.`);
         amount = null;
         range = null;
         return true;
-    }   else if (adjustedRange < 1 || adjustedRange > 500)   {
+    }   else if (range < 1 || range > 500)   {
         alert('범위는 1 이상, 500 이하로 입력해주세요.');
-        amtNum.value = null;
-        rngNum.value = null;
+        amount = null;
+        range = null;
         return true;
     }
 }
@@ -169,7 +172,7 @@ function randArrange(amount, range)   {
  * Animation
  * @todo 마지막 테이블 출력 시 화면 흔들리는 효과
  */
-function anim(amount, range, resultField) {
+function anim(amount, range, resultDiv) {
     let delay = 10;
     let count = 0;
     //while 문으로 사용할 시 js eventloop 내부 구조상 렌더링이 while 문 실행이 완료된 이후 진행됨.
@@ -182,7 +185,7 @@ function anim(amount, range, resultField) {
         }
         const animRandArr = randArrange(amount, range);
         const animDiv = makeResultDiv(animRandArr);
-        resultField.innerHTML = animDiv;
+        resultDiv.innerHTML = animDiv;
         soundEffects[count].play();
         if (delay < 200)    {
             delay += 5;
@@ -209,19 +212,12 @@ function sleep(ms)  {
 }
 
 /**
- * Update Result Div
- */
-function updateResultDiv()  {
-    
-}
-
-/**
  * Show Result Div
  */
 function makeResultDiv(randArr) {
     result = '';
     for (let i = 0; i < Object.keys(randArr).length; i++)    {
-        result += `<div class="w-20 h-20 m-2 border bg-white bg-opacity-25 flex justify-center items-center">${randArr[i]}</div>`;
+        result += `<div class="w-20 h-25 m-2 border bg-white bg-opacity-25 flex justify-center items-center">${randArr[i]}</div>`;
     }
     return result;
 }
