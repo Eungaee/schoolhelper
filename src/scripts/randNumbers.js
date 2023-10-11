@@ -63,7 +63,7 @@ goButton.addEventListener("click", function()  {
     if (checkLimit(amountNum.value, rangeNum.value))  {
         return;
     }
-    if (goButton.innerText === 'GO !') {
+    if (goButton.innerText === '확인') {
         amountNum.disabled = true;
         amountNum.className += ' cursor-not-allowed';
         rangeNum.disabled = true;
@@ -82,7 +82,7 @@ goButton.addEventListener("click", function()  {
         rangeNum.className = classNames.rngn;
         /** 자리 배치 저장하기 버튼이 애니메이션 재생 중 보여지는 버그 있음. */
         saveimgButton.className = classNames.savib;
-        goButton.innerText = 'GO !';
+        goButton.innerText = '확인';
         restart = true;
         wait = true;
         loop();

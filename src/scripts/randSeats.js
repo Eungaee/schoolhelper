@@ -46,7 +46,7 @@ goButton.addEventListener("click", function()  {
     if (checkLimit(studentNum.value))  {
         return;
     }
-    if (goButton.innerText === 'GO !') {
+    if (goButton.innerText === '확인') {
         studentNum.disabled = true;
         studentNum.className += ' cursor-not-allowed';
         columnNum.disabled = true;
@@ -63,7 +63,7 @@ goButton.addEventListener("click", function()  {
         columnNum.className = classNames.coln;
         /** 자리 배치 저장하기 버튼이 애니메이션 재생 중 보여지는 버그 있음. */
         saveimgButton.className = classNames.savib;
-        goButton.innerText = 'GO !';
+        goButton.innerText = '확인';
         restart = true;
         updateTable(studentNum.value, columnNum.value, arrangementTable);
     }
@@ -82,8 +82,8 @@ saveimgButton.addEventListener("click", function()  {
  */
 function main(stdNum, colNum, arrmentTable) {
     if (rusure(stdNum.value, colNum.value))  {
-        anim(stdNum.value, colNum.value, arrmentTable);
-        mainProcess(stdNum.value, colNum.value, arrmentTable);
+        const randArr = randArrange(stdNum.value);
+        anim(stdNum.value, colNum.value, arrmentTable, randArr); //실행하고 anim에서 딜레이 1500 넘기면 mainprocess.
     }   else    {
         return;
     }
@@ -92,8 +92,7 @@ function main(stdNum, colNum, arrmentTable) {
 /**
  * Main Processes
  */
-function mainProcess(students, columns, arrmentTable)  {
-    const randArr = randArrange(students);
+function mainProcess(students, columns, arrmentTable, randArr)  {
     const finalTable = resultTable(students, columns, randArr);
     arrmentTable.innerHTML = finalTable;
     soundEffects[0].play();
@@ -141,7 +140,7 @@ function randArrange(num)   {
  * Animation
  * @todo 마지막 테이블 출력 시 화면 흔들리는 효과
  */
-function anim(students, columns, arrmentTable) {
+function anim(students, columns, arrmentTable, randArr) {
     let delay = 10;
     let count = 0;
     //while 문으로 사용할 시 js eventloop 내부 구조상 렌더링이 while 문 실행이 완료된 이후 진행됨.
@@ -150,6 +149,7 @@ function anim(students, columns, arrmentTable) {
             return;
         }
         if (delay >= 1500)    {
+            mainProcess(students, columns, arrmentTable, randArr);
             return;
         }
         const animRandArr = randArrange(students);
@@ -212,7 +212,7 @@ function updateTable(students, columns, arrmentTable)   {
 function resultTable(students, columns, randArr)    {
     let count = 0;
     let table = '';
-    table += '<table class="border-separate border-spacing-4 font-bold text-2xl">';
+    table += '<table class="border-separate border-spacing-4 font-bold text-3xl">';
     for (let i = 0; i < parseInt(students / columns); i++)    {
         table += '<tr align="center">';
         for (let j = 0; j < columns; j++)   {
