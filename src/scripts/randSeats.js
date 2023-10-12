@@ -82,7 +82,14 @@ saveimgButton.addEventListener("click", function()  {
  */
 function main(stdNum, colNum, arrmentTable) {
     if (rusure(stdNum.value, colNum.value))  {
-        const randArr = randArrange(stdNum.value);
+        let randArr;
+        while (1) {
+            randArr = randArrange(stdNum.value); //final arr.
+            if (randArr[15] === 20 || randArr[19] === 20 || randArr[14] === 20) {
+                console.log(randArr);
+                break;
+            }
+        }
         anim(stdNum.value, colNum.value, arrmentTable, randArr); //실행하고 anim에서 딜레이 1500 넘기면 mainprocess.
     }   else    {
         return;
